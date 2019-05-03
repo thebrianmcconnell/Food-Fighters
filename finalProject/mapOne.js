@@ -72,13 +72,13 @@ var randNum = function (x) {
 // The functions for the game objects
 // The towers 
 
-function Tower() {
+function Tower(x, y) {
 	this.types = ["fork", "spoon", "knife"];
 	this.type = this.types[range(0, 2)];
 	this.width = 100;
 	this.height = 100;
-	this.x = 200
-	this.y = 270
+	this.x = x
+	this.y = y
 	this.hitspeed = 2
 	this.state = "ready"
 	allTowers.push(this);
@@ -142,14 +142,14 @@ var start = function() {
 	foodWave(wave);
 
 	// Spawn the towers
-	var tower1 = new Tower();
-	tower1.type = "fork";
+	var tower = new Tower(200, 270);
+	tower.type = "fork";
 	// createTower(100, 100, "fork");
 
 	// Spawn the napkins
-	napkin = new Napkin(200, 270);
-	napkin = new Napkin(400, 270);
-	napkin = new Napkin(600, 270);
+	var napkin = new Napkin(200, 270);
+	var napkin = new Napkin(400, 270);
+	var napkin = new Napkin(600, 270);
 
 }
 
@@ -176,11 +176,24 @@ function mouseClick(e) {
 }
 
 function purchaseFork(){
-	var tower = new Tower();
-	allTowers[tower].x = allNapkins[napkin].x;
-	allTowers[tower].y = allNapkins[napkin].y;
-	allTowers[tower].type = "fork";
-	allNapkins[napkin].state = "empty";
+	if (mouseCoords[0] >= 400 &&
+		mouseCoords[0] <= 500 &&
+		mouseCoords[1] >= 275 &&
+		mouseCoords[1] <= 375) {
+			var tower = new Tower(400, 275);
+		} 
+
+	if (mouseCoords[0] >= 600 &&
+		mouseCoords[0] <= 700 &&
+		mouseCoords[1] >= 275 &&
+		mouseCoords[1] <= 375) {
+			var tower = new Tower(600, 275);
+		} 
+	// var tower = new Tower();
+	// allTowers[tower].x = allNapkins[napkin].x;
+	// allTowers[tower].y = allNapkins[napkin].y;
+	// allTowers[tower].type = "fork";
+	// allNapkins[napkin].state = "empty";
 }
 	
 // The Update Function
@@ -256,9 +269,9 @@ var update = function() {
 		// console.log(allFoods[food].x)
 	}
 
-	// console.log(allTowers.length);
-	console.log(allNapkins[napkin].x);
-
+	// console.log(allNapkins[napkin].x);
+	// console.log(allNapkins.length);
+	// console.log(allFoods[food].x);
 }
 
 
