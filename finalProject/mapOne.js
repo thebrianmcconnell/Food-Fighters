@@ -63,15 +63,6 @@ napkinImage.onload = function () {
 };
 napkinImage.src = "../Images/napkin.png";
 
-// Start screen
-var startscreenReady = false;
-var startscreenImage = new Image();
-startscreenImage.onload = function () {
-	startscreenReady = true;
-	// console.log("start screen image loaded successfully");
-};
-startscreenImage.src = "../Images/startScreen.png";
-
 
 // Make random numbers
 var randNum = function (x) {
@@ -154,12 +145,11 @@ var start = function() {
 	var tower1 = new Tower();
 	tower1.type = "fork";
 	// createTower(100, 100, "fork");
-	console.log("start is working");
 
 	// Spawn the napkins
-	napkin1 = new Napkin(200, 270);
-	napkin2 = new Napkin(400, 270);
-	napkin3 = new Napkin(600, 270);
+	napkin = new Napkin(200, 270);
+	napkin = new Napkin(400, 270);
+	napkin = new Napkin(600, 270);
 
 }
 
@@ -185,29 +175,11 @@ function mouseClick(e) {
 		}
 }
 
-
-// Start the game by clicking space
-addEventListener("keydown", function (e) {
-	keysDown[e.key] = true;
-}, false);
-
-addEventListener("keyup", function (e) {
-	delete keysDown[e.key];
-}, false);
-
-var input = function () {
-	// checks for user input
-	if (" " in keysDown) { 
-		playing = true;
-		start();
-		text();
-	}
-}
-
 function purchaseFork(){
-	var fork = new Tower();
-	allTowers[fork].x = allNapkins[napkin].x;
-	allTowers[fork].y = allNapkins[napkin].y;
+	var tower = new Tower();
+	allTowers[tower].x = allNapkins[napkin].x;
+	allTowers[tower].y = allNapkins[napkin].y;
+	allTowers[tower].type = "fork";
 	allNapkins[napkin].state = "empty";
 }
 	
@@ -284,12 +256,8 @@ var update = function() {
 		// console.log(allFoods[food].x)
 	}
 
-	// Render the menu
-	if (startscreenReady == true && 
-		playing == false
-		) {
-		ctx.drawImage(startscreenImage, 0, 0)	
-	}
+	// console.log(allTowers.length);
+	console.log(allNapkins[napkin].x);
 
 }
 
@@ -298,41 +266,31 @@ var update = function() {
 var render = function () {
 
 	
-	if (bgReady == true &&
-		playing == true
-		) {
+	if (bgReady == true) {
 		ctx.drawImage(bgImage, 0, 0);
 		// console.log("background drawn successfully")
 	}
 
-	if (napkinReady == true &&
-		playing == true
-		) {
+	if (napkinReady == true) {
 		for (napkin in allNapkins) {
 			ctx.drawImage(napkinImage, allNapkins[napkin].x, allNapkins[napkin].y);	
 			// console.log("napkin drawn successfully")
 		}
 	}
 
-	if (forkReady == true &&
-		playing == true) {
+	if (forkReady == true) {
 		for (tower in allTowers) {
 			ctx.drawImage(forkImage, allTowers[tower].x, allTowers[tower].y);
 			// console.log("fork drawn successfully")
 		}
 	}
 
-	if (spaghettiReady == true &&
-		playing == true) {
+	if (spaghettiReady == true) {
 		for (food in allFoods) {
 			ctx.drawImage(spaghettiImage, allFoods[food].x, allFoods[food].y);	
 		}
 	}
 
-	
-}
-
-var text = function(){
 	// Write the map number
 	ctx.fillStyle = "rgb(250, 250, 250)";
 	ctx.font = "24px Helvetica";
@@ -353,6 +311,8 @@ var text = function(){
 	ctx.textAlign = "right";
 	ctx.textBaseline = "top";
 	ctx.fillText("You have " + lives + " lives", 820, 40);
+
+	
 }
 
 // Resize the game based on the browser 
@@ -369,8 +329,6 @@ var main = function () {
 
 	then = now;
 
-	input();
-
 	render();
 
 
@@ -379,5 +337,6 @@ var main = function () {
 };
 
 var then = Date.now();
+start();
 reset();
 main();
