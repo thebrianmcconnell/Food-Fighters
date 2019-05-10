@@ -73,7 +73,7 @@ startScreenImage.onload = function () {
 	startScreenReady = true;
 	console.log("startscreen image loaded successfully");
 };
-startScreenImage.src = "../Images/startScreen.png";
+startScreenImage.src = "../Images/openingScreen.png";
 
 
 // Make random numbers
@@ -343,11 +343,15 @@ var hit = function () {
 
 // Render the menu screen
 var firstRender = function () {
-	// if (startScreenReady == true) {
+	if (startScreenReady == true) {
 		ctx.drawImage(startScreenImage, 0, 0);
 		console.log("we did it");
-	// }
+	}
+	else {
+		console.log("oh boy");
+	}
 }
+// console.log(startScreenReady);
 // console.log("background drawn successfully")
 
 
