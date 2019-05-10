@@ -11,3 +11,19 @@
         color: orange;
     }
 }
+
+.link1{ 
+    position: relative; z-index: 99999; 
+}
+
+.background{
+    background-image: url("../images/openingScreen.png");
+    width: 850px;
+    height: 450px;
+}
+
+.link1{
+    float: left;
+    margin-left: 50px;
+    margin-top: 200px;
+}

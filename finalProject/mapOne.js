@@ -4,6 +4,8 @@ var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
 canvas.width = 850;
 canvas.height = 450;
+// canvas.x = 0;
+// canvas.y = 0;
 document.body.appendChild(canvas);
 
 // Global variables
@@ -12,7 +14,8 @@ document.body.appendChild(canvas);
 var allFoods = [];
 var allTowers = [];
 var allNapkins = [];
-var mouseCoords = [0,0];
+var mouseCoords = [0, 0];
+var keysDown = {};
 
 // The other stuff 
 foodWave(wave);
@@ -63,6 +66,15 @@ napkinImage.onload = function () {
 };
 napkinImage.src = "../Images/napkin.png";
 
+// Napkin image
+var startScreenReady = false;
+var startScreenImage = new Image();
+startScreenImage.onload = function () {
+	startScreenReady = true;
+	// console.log("startscreen image loaded successfully");
+};
+startScreenImage.src = "../Images/openingScreen.png";
+
 
 // Make random numbers
 var randNum = function (x) {
@@ -100,7 +112,7 @@ function Food() {
 	this.speed = 5;
 	this.width = 100;
 	this.height = 56;
-	this.x = (randNum(canvas.width)-1850);
+	this.x = (randNum(canvas.width) - 1850);
 	this.y = 200;
 	allFoods.push(this);
 }
@@ -136,7 +148,7 @@ function foodWave(max) {
 // }
 
 // Start the game
-var start = function() {
+var start = function () {
 
 	// Spawn the wave of food
 	foodWave(wave);
@@ -155,89 +167,130 @@ var start = function() {
 
 // Next wave
 
-var reset = function() {
+var reset = function () {
 	// Call another wave if everybody was killed
+}
+
+// The key controls
+
+addEventListener("keydown", function (e) {
+	keysDown[e.key] = true;
+}, false);
+
+addEventListener("keyup", function (e) {
+	delete keysDown[e.key];
+}, false);
+
+var input = function () {
+	if (
+		" " in keysDown &&
+		allTowers[tower].state == "ready"
+	) {
+		hit();
+	}
 }
 
 // Click on area of screen to buy
 addEventListener('mousedown', mouseClick);
 
 function mouseClick(e) {
-	mouseCoords=  [e.clientX, e.clientY];
-	console.log(mouseCoords);
-	if (mouseCoords[0] >= allNapkins[napkin].x &&
-		mouseCoords[0] <= (allNapkins[napkin].x + allNapkins[napkin].width) &&
-		mouseCoords[1] >= allNapkins[napkin].y &&
-		mouseCoords[1] <= (allNapkins[napkin].y + allNapkins[napkin].height) &&
-		allNapkins[napkin].state == "empty" 
-		) {
-			purchaseFork();
-		}
-}
-
-function purchaseFork(){
+	mouseCoords = [e.clientX, e.clientY];
+	// console.log(mouseCoords);
 	if (mouseCoords[0] >= 400 &&
 		mouseCoords[0] <= 500 &&
 		mouseCoords[1] >= 275 &&
-		mouseCoords[1] <= 375) {
-			var tower = new Tower(400, 275);
-		} 
+		mouseCoords[1] <= 375 &&
+		// allNapkins[napkin].state == "empty" &&
+		playing == "true") {
+		var tower = new Tower(400, 275);
+	}
 
 	if (mouseCoords[0] >= 600 &&
 		mouseCoords[0] <= 700 &&
 		mouseCoords[1] >= 275 &&
-		mouseCoords[1] <= 375) {
-			var tower = new Tower(600, 275);
-		} 
+		mouseCoords[1] <= 375 &&
+		// allNapkins[napkin].state == "empty" &&
+		playing == "true") {
+		var tower = new Tower(600, 275);
+	}
+
+	if (mouseCoords[0] >= 600 &&
+		mouseCoords[0] <= 700 &&
+		mouseCoords[1] >= 275 &&
+		mouseCoords[1] <= 375 &&
+		// allNapkins[napkin].state == "empty" &&
+		playing == "true") {
+		var tower = new Tower(600, 275);
+	}
+
+	if (mouseCoords[0] >= 310 &&
+		mouseCoords[0] <= 530 &&
+		mouseCoords[1] >= 175 &&
+		mouseCoords[1] <= 415) {
+		var playing = "true";
+		console.log("woo");
+		start();
+		reset();
+		main();
+	}
+
+	console.log(mouseCoords);
+	console.log(playing);
 	// var tower = new Tower();
 	// allTowers[tower].x = allNapkins[napkin].x;
 	// allTowers[tower].y = allNapkins[napkin].y;
 	// allTowers[tower].type = "fork";
 	// allNapkins[napkin].state = "empty";
 }
-	
+
+// mouseCoords[0] >= allNapkins[napkin].x &&
+// mouseCoords[0] <= (allNapkins[napkin].x + allNapkins[napkin].width) &&
+// mouseCoords[1] >= allNapkins[napkin].y &&
+// mouseCoords[1] <= (allNapkins[napkin].y + allNapkins[napkin].height) &&
+
+
 // The Update Function
-var update = function() {
+var update = function () {
 
 	// for (food in allFoods) {
-		// console.log(allFoods.length);
+	// console.log(allFoods.length);
 	// }
 
 	// for (food in allFoods) {
 	// var reset = function() {
 	if (allFoods.length == 0) {
-	// console.log("next wave is ready!");
+		// console.log("next wave is ready!");
 		++wave;
 		foodWave(wave);
 		++waveNumber;
 		// allFoods[food].speed = 0;
 	}
 	// }
-	
+
 
 	// Move the food across the screen
-	for (food in allFoods) 	{
+	for (food in allFoods) {
 		allFoods[food].x += allFoods[food].speed;
 	}
 
-	// for (tower in allTowers) {
-	// 	console.log(allTowers[tower].state)
-	// }
+	for (tower in allTowers) {
+		// console.log(allTowers[tower].x);
+	}
 
 	// Make the tower hit if a food is detected
 
-	for (tower in allTowers) {
-		if (
-			allTowers[tower].x <= (allFoods[food].x + 10) &&
-			allFoods[food].x <= allTowers[tower].x +allTowers[tower].width 
-			// allTowers[tower].state == "ready"
-			// (allFoods[food].y - allTowers[tower].y) || 
-		) {
-			allTowers[tower].y -= allTowers[tower].hitspeed;
-			allTowers[tower].state = "hitting";
-			// console.log("going up");
-		}
-	}
+	// for (tower in allTowers) {
+	// 	if (
+	// 		allTowers[tower].x <= (allFoods[food].x + 10) &&
+	// 		allFoods[food].x <= allTowers[tower].x +allTowers[tower].width 
+	// 		// allTowers[tower].state == "ready"
+	// 		// (allFoods[food].y - allTowers[tower].y) || 
+	// 	) {
+	// 		allTowers[tower].y -= allTowers[tower].hitspeed;
+	// 		allTowers[tower].state = "hitting";
+	// 		// console.log("going up");
+	// 	}
+	// }
 
 	// Collision between tower and food
 
@@ -247,24 +300,24 @@ var update = function() {
 			allFoods[food].x <= (allTowers[tower].x + allTowers[tower].width) &&
 			allTowers[tower].y <= (allFoods[food].y + allFoods[food].height) &&
 			allFoods[food].y <= (allTowers[tower].y + allTowers[tower].height) &&
-			allTowers[tower].state == "hitting" 
+			allTowers[tower].state == "hitting"
 		) {
-			allFoods.splice(food, 1);
+			eat();
 			allTowers[tower].state = "ready";
 			allTowers[tower].y = 270;
 			// console.log("BAM!");
 			// console.log(food);
-			++ money;
+			++money;
 		}
 	}
 
 	// Take away a food if it's off the screen
 	for (food in allFoods) {
 		if (
-			allFoods[food].x > 850 
-		){
-			allFoods.splice(food, 1);
-			-- lives; 
+			allFoods[food].x > 850
+		) {
+			eat();
+			--lives;
 		}
 		// console.log(allFoods[food].x)
 	}
@@ -274,11 +327,33 @@ var update = function() {
 	// console.log(allFoods[food].x);
 }
 
+var eat = function () {
+	allFoods.splice(food, 1);
+}
+
+var hit = function () {
+	do {
+		allTowers[tower].y -= allTowers[tower].hitspeed;
+	} while (
+		allTowers[tower].y < 170
+	)
+	// allTowers[tower].y -= allTowers[tower].hitspeed;
+	// allTowers[tower].state = "hitting";
+}
+
+// Render the menu screen
+var firstRender = function () {
+	if (startScreenReady == true) {
+		ctx.drawImage(startScreenImage, 0, 0);
+	}
+}
+// console.log("background drawn successfully")
+
 
 // Render the stuff 
 var render = function () {
 
-	
+
 	if (bgReady == true) {
 		ctx.drawImage(bgImage, 0, 0);
 		// console.log("background drawn successfully")
@@ -286,7 +361,7 @@ var render = function () {
 
 	if (napkinReady == true) {
 		for (napkin in allNapkins) {
-			ctx.drawImage(napkinImage, allNapkins[napkin].x, allNapkins[napkin].y);	
+			ctx.drawImage(napkinImage, allNapkins[napkin].x, allNapkins[napkin].y);
 			// console.log("napkin drawn successfully")
 		}
 	}
@@ -300,32 +375,32 @@ var render = function () {
 
 	if (spaghettiReady == true) {
 		for (food in allFoods) {
-			ctx.drawImage(spaghettiImage, allFoods[food].x, allFoods[food].y);	
+			ctx.drawImage(spaghettiImage, allFoods[food].x, allFoods[food].y);
 		}
 	}
 
 	// Write the map number
-	ctx.fillStyle = "rgb(250, 250, 250)";
+	ctx.fillStyle = "rgb(0, 0, 0)";
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
 	ctx.fillText("Wave " + waveNumber, 10, 10);
 
 	// Write the money stuff
-	ctx.fillStyle = "rgb(250, 250, 250)";
+	ctx.fillStyle = "rgb(0, 0, 0)";
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "right";
 	ctx.textBaseline = "top";
 	ctx.fillText("You have " + money + " foodbucks", 820, 10);
 
 	// Write the lives 
-	ctx.fillStyle = "rgb(250, 250, 250)";
+	ctx.fillStyle = "rgb(0, 0, 0)";
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "right";
 	ctx.textBaseline = "top";
 	ctx.fillText("You have " + lives + " lives", 820, 40);
 
-	
+
 }
 
 // Resize the game based on the browser 
@@ -343,13 +418,18 @@ var main = function () {
 	then = now;
 
 	render();
-
+	input();
 
 	// Request to do this again ASAP
 	requestAnimationFrame(main);
 };
 
 var then = Date.now();
-start();
-reset();
-main();
+if (playing == true) {
+	start();
+	reset();
+	main();
+}
+if (playing == false) {
+	firstRender();
+}
