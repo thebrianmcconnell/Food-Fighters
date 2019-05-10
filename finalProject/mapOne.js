@@ -71,9 +71,9 @@ var startScreenReady = false;
 var startScreenImage = new Image();
 startScreenImage.onload = function () {
 	startScreenReady = true;
-	// console.log("startscreen image loaded successfully");
+	console.log("startscreen image loaded successfully");
 };
-startScreenImage.src = "../Images/openingScreen.png";
+startScreenImage.src = "../Images/startScreen.png";
 
 
 // Make random numbers
@@ -343,9 +343,10 @@ var hit = function () {
 
 // Render the menu screen
 var firstRender = function () {
-	if (startScreenReady == true) {
+	// if (startScreenReady == true) {
 		ctx.drawImage(startScreenImage, 0, 0);
-	}
+		console.log("we did it");
+	// }
 }
 // console.log("background drawn successfully")
 
@@ -424,12 +425,11 @@ var main = function () {
 	requestAnimationFrame(main);
 };
 
+firstRender()
+
 var then = Date.now();
 if (playing == true) {
 	start();
 	reset();
 	main();
-}
-if (playing == false) {
-	firstRender();
 }
