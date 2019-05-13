@@ -66,15 +66,20 @@ napkinImage.onload = function () {
 };
 napkinImage.src = "../Images/napkin.png";
 
-// Napkin image
-var startScreenReady = false;
-var startScreenImage = new Image();
-startScreenImage.onload = function () {
-	startScreenReady = true;
-	console.log("startscreen image loaded successfully");
+// Menu image
+var menuReady = false;
+var menuImage = new Image();
+menuImage.onload = function () {
+	menuReady = true;
+	console.log("menu image loaded successfully");
+	firstRender();
 };
-startScreenImage.src = "../Images/openingScreen.png";
+menuImage.src = "../Images/openingScreen.png";
 
+
+var input = function(){
+
+}
 
 // Make random numbers
 var randNum = function (x) {
@@ -91,7 +96,7 @@ function Tower(x, y) {
 	this.height = 100;
 	this.x = x
 	this.y = y
-	this.hitspeed = 2
+	this.hitspeed = 5
 	this.state = "ready"
 	allTowers.push(this);
 }
@@ -162,6 +167,7 @@ var start = function () {
 	var napkin = new Napkin(200, 270);
 	var napkin = new Napkin(400, 270);
 	var napkin = new Napkin(600, 270);
+	lives = 10;
 
 }
 
@@ -181,14 +187,7 @@ addEventListener("keyup", function (e) {
 	delete keysDown[e.key];
 }, false);
 
-var input = function () {
-	if (
-		" " in keysDown &&
-		allTowers[tower].state == "ready"
-	) {
-		hit();
-	}
-}
+
 
 // Click on area of screen to buy
 addEventListener('mousedown', mouseClick);
@@ -243,6 +242,14 @@ function mouseClick(e) {
 	// allNapkins[napkin].state = "empty";
 }
 
+var input = function () {
+	if (
+		" " in keysDown 
+	) {
+		allTowers[tower].y -= allTowers[tower].hitspeed;
+	}
+}
+
 // mouseCoords[0] >= allNapkins[napkin].x &&
 // mouseCoords[0] <= (allNapkins[napkin].x + allNapkins[napkin].width) &&
 // mouseCoords[1] >= allNapkins[napkin].y &&
@@ -267,6 +274,7 @@ var update = function () {
 	}
 	// }
 
+	
 
 	// Move the food across the screen
 	for (food in allFoods) {
@@ -296,10 +304,10 @@ var update = function () {
 
 	for (tower in allTowers) {
 		if (
-			allTowers[tower].x <= (allFoods[food].x + allFoods[food].width) &&
-			allFoods[food].x <= (allTowers[tower].x + allTowers[tower].width) &&
-			allTowers[tower].y <= (allFoods[food].y + allFoods[food].height) &&
-			allFoods[food].y <= (allTowers[tower].y + allTowers[tower].height) &&
+			allTowers[tower].x <= (allFoods[food].x + allFoods[food].width + 10) &&
+			allFoods[food].x <= (allTowers[tower].x + allTowers[tower].width + 10) &&
+			allTowers[tower].y <= (allFoods[food].y + allFoods[food].height + 10) &&
+			allFoods[food].y <= (allTowers[tower].y + allTowers[tower].height + 10) &&
 			allTowers[tower].state == "hitting"
 		) {
 			eat();
@@ -308,6 +316,12 @@ var update = function () {
 			// console.log("BAM!");
 			// console.log(food);
 			++money;
+		}
+	}
+
+	for (tower in allTowers) {
+		if (allTowers[tower].x <= 170) {
+			allTowers[tower].x = 270;
 		}
 	}
 
@@ -331,29 +345,31 @@ var eat = function () {
 	allFoods.splice(food, 1);
 }
 
-var hit = function () {
-	do {
-		allTowers[tower].y -= allTowers[tower].hitspeed;
-	} while (
-		allTowers[tower].y < 170
-	)
-	// allTowers[tower].y -= allTowers[tower].hitspeed;
-	// allTowers[tower].state = "hitting";
-}
+// var hit = function () {
+// 	do {
+// 		allTowers[tower].y -= allTowers[tower].hitspeed;
+// 	} while (
+// 		allTowers[tower].y < 170
+// 	)
 
-// Render the menu screen
+// 	// allTowers[tower].y -= allTowers[tower].hitspeed;
+// 	allTowers[tower].state = "hitting";
+// }
+
+
+// console.log(startScreenReady);
+// console.log("background drawn successfully")
+
+// Render the menu
 var firstRender = function () {
-	if (startScreenReady == true) {
-		ctx.drawImage(startScreenImage, 0, 0);
-		console.log("we did it");
+	if (menuReady == true) {
+		ctx.drawImage(menuImage, 0, 0);
+		console.log("Menu drawn successfully");
 	}
 	else {
 		console.log("oh boy");
 	}
 }
-// console.log(startScreenReady);
-// console.log("background drawn successfully")
-
 
 // Render the stuff 
 var render = function () {
@@ -429,7 +445,7 @@ var main = function () {
 	requestAnimationFrame(main);
 };
 
-firstRender()
+
 
 var then = Date.now();
 if (playing == true) {
@@ -437,3 +453,5 @@ if (playing == true) {
 	reset();
 	main();
 }
+
+// setTimeout(firstRender(),2000)
